@@ -1,21 +1,19 @@
- class bestiolefactory  {
-    private : 
-        static Instance
-        ConfigInitiale (ex: 0.2 gégaire 0.2... etc)
+#include "BestioleFactory.h"
+#include <cstdlib>
 
-    public :
-        static getInstance() {
-            Si InstanceUnique nulle alors = new Bestiolefacory()
-            return InstanceUnique
-        }
+BestioleFactory* BestioleFactory::instance = nullptr;
 
-        Bestiole créerBestiole(milieu m) {
-            Comportement choisi = tirerAuSortLaConfig()
+BestioleFactory::BestioleFactory()
+{
+    pGregaire = 0.3;
+    pPeureuse = 0.3;
+    pKamikaze = 0.4;
+}
 
-            NouvelleBestiole b = new Bestiole()
-            b.setComportement(choisi)
+BestioleFactory* BestioleFactory::getInstance()
+{
+    if(instance == nullptr)
+        instance = new BestioleFactory();
 
-            b.initCoords(m.width, m.height)
-            retourner b
-        }
+    return instance;
 }
