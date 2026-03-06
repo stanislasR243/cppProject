@@ -28,16 +28,15 @@ Milieu::~Milieu( void )
 
 void Milieu::step( void )
 {
-
    cimg_forXY( *this, x, y ) fillC( x, y, 0, white[0], white[1], white[2] );
-   for ( std::vector<Bestiole>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
+
+   // on change juste Bestiole en IBestiole*
+   for ( std::vector<IBestiole*>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
    {
-
-      it->action( *this );
-      it->draw( *this );
-
-   } // for
-
+      // On utilise -> car c'est maintenant un pointeur
+      (*it)->action( *this );
+      (*it)->draw( *this );
+   } 
 }
 
 
