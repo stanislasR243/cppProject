@@ -120,14 +120,10 @@ void Bestiole::action( Milieu & monMilieu )
    const double PROBA_CLONAGE = 0.01; // 1% de chance
 
    if ((double)rand() / RAND_MAX < PROBA_CLONAGE)
-   {
-      Bestiole* clone = new Bestiole(*this); // utilise le constructeur de copie
-
-      clone->initCoords(monMilieu.getWidth(), monMilieu.getHeight());
-
-      monMilieu.addMember(clone);
-   }
-
+    {
+        Bestiole clone(*this);               // constructeur de copie
+        monMilieu.addMember(clone);          // copie dans le vecteur
+    }
 }
 
 
