@@ -36,7 +36,16 @@ void Milieu::step( void )
       // On utilise -> car c'est maintenant un pointeur
       (*it)->action( *this );
       (*it)->draw( *this );
-   } 
+   }
+  // Après avoir appelé action() et draw() pour toutes les bestioles
+listeBestioles.erase(
+    std::remove_if(
+        listeBestioles.begin(),
+        listeBestioles.end(),
+        [](const std::unique_ptr<IBestiole> & b){ return b->estMorte(); }
+    ),
+    listeBestioles.end()
+);
 }
 
 void Milieu::addMember(std::unique_ptr<IBestiole> b)
