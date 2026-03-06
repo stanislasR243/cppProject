@@ -111,6 +111,16 @@ void Bestiole::action( Milieu & monMilieu )
 
    age++;
    bouge(monMilieu.getWidth(), monMilieu.getHeight());
+   const double PROBA_CLONAGE = 0.01; // 1% de chance
+
+   if ((double)rand() / RAND_MAX < PROBA_CLONAGE)
+   {
+      Bestiole* clone = new Bestiole(*this); // utilise le constructeur de copie
+
+      clone->initCoords(monMilieu.getWidth(), monMilieu.getHeight());
+
+      monMilieu.addMember(clone);
+   }
 
 }
 
@@ -136,7 +146,7 @@ bool operator==( const Bestiole & b1, const Bestiole & b2 )
 }
 
 
-bool Bestiole::jeTeVois( const Bestiole & b ) const
+bool Bestiole::jeTeVois( const IBestiole & b ) const
 {
    return false; // Seuls les décorateurs Yeux/Oreilles retourneront true
    //////////////////////////////////////////////////////
