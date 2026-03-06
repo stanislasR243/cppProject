@@ -12,6 +12,10 @@ public:
     virtual void action(Milieu& m) = 0;
     virtual void draw(UImg& img) = 0;
     virtual bool jeTeVois(const IBestiole& b) const = 0;
+
+    virtual double getX() const = 0;
+    virtual double getY() const = 0;
+    virtual double getOrientation() const = 0;
     
     // Ajouts pour les accessoires
     virtual double getVitesse() const = 0;
