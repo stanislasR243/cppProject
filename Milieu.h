@@ -32,7 +32,7 @@ public :
 
    void step( void );
 
-   void addMember(std::unique_ptr<IBestiole> b); { listeBestioles.push_back(b); listeBestioles.back().initCoords(width, height); }
+   void addMember(std::unique_ptr<IBestiole> b);
    int nbVoisins( const Bestiole & b );
 
 };
