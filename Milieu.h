@@ -18,7 +18,7 @@ private :
    static const T          white[];
 
    int                     width, height;
-   std::vector<Bestiole>   listeBestioles;
+   std::vector<IBestiole*>   listeBestioles;
 
 public :
    Milieu( int _width, int _height );
