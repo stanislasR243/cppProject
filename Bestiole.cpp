@@ -24,6 +24,9 @@ Bestiole::Bestiole( void )
    cumulX = cumulY = 0.;
    orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
+   // --- AJOUT : âge ---
+   age = 0;
+   maxAge = rand() % 200 + 100; // limite aléatoire entre 100 et 299
 
    couleur = new T[ 3 ];
    couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
@@ -47,6 +50,9 @@ Bestiole::Bestiole( const Bestiole & b )
    vitesse = b.vitesse;
    couleur = new T[ 3 ];
    memcpy( couleur, b.couleur, 3*sizeof(T) );
+   // --- AJOUT : âge et âge max ---
+   age = b.age;
+   maxAge = b.maxAge;
 
 }
 
