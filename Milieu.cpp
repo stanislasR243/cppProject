@@ -39,7 +39,11 @@ void Milieu::step( void )
    } 
 }
 
-
+void Milieu::addMember(std::unique_ptr<IBestiole> b)
+{
+    b->initCoords(width, height);           // position aléatoire du clone
+    listeBestioles.push_back(std::move(b)); // transfert de propriété
+}
 int Milieu::nbVoisins( const Bestiole & b )
 {
 
