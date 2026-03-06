@@ -114,16 +114,27 @@ void Bestiole::bouge( int xLim, int yLim )
 
 void Bestiole::action( Milieu & monMilieu )
 {
-
    age++;
-   bouge(monMilieu.getWidth(), monMilieu.getHeight());
-   const double PROBA_CLONAGE = 0.01; // 1% de chance
 
+   if (comportement != nullptr) {
+       // On passe *this car l'interface attend une IBestiole&
+       comportement->execute(*this, monMilieu);
+   }
+
+
+   bouge(monMilieu.getWidth(), monMilieu.getHeight());
+
+   const double PROBA_CLONAGE = 0.005; // Ajuste la proba pour éviter l'invasion
    if ((double)rand() / RAND_MAX < PROBA_CLONAGE)
-    {
-        Bestiole clone(*this);               // constructeur de copie
-        monMilieu.addMember(clone);          // copie dans le vecteur
-    }
+   {
+
+       Bestiole* clone = new Bestiole(*this);
+
+       clone->identite = ++next; 
+       clone->age = 0; 
+
+       monMilieu.addMember(clone); 
+   }
 }
 
 
