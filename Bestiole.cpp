@@ -111,27 +111,23 @@ void Bestiole::bouge( int xLim, int yLim )
 
 }
 
-
-void Bestiole::action( Milieu & monMilieu )
+void Bestiole::action(Milieu & monMilieu)
 {
-   age++;
+    age++; // vieillit
 
-   if (comportement != nullptr) {
-       comportement->execute(*this, monMilieu);
-   }
+    bouge(monMilieu.getWidth(), monMilieu.getHeight());
 
-   bouge(monMilieu.getWidth(), monMilieu.getHeight());
+    const double PROBA_CLONAGE = 0.01; // 1% de chance
 
-   const double PROBA_CLONAGE = 0.01; // 1% de chance
+    if ((double)rand() / RAND_MAX < PROBA_CLONAGE)
+    {
+        // Crée un clone en smart pointer
+        auto clone = std::make_unique<Bestiole>(*this); // utilise constructeur de copie
 
-   if ((double)rand() / RAND_MAX < PROBA_CLONAGE)
-   {
-       Bestiole* clone = new Bestiole(*this);
-
-       monMilieu.addMember(clone); 
-   }
+        // Ajoute le clone au milieu
+        monMilieu.addMember(std::move(clone));
+    }
 }
-
 
 void Bestiole::draw( UImg & support )
 {
