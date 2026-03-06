@@ -13,6 +13,9 @@ public:
     // Logique de simulation
     virtual void action(Milieu& m) = 0;
     virtual void draw(UImg& img) = 0;
+    // Pour que le comportement puisse diriger la bestiole
+    virtual void setOrientation(double a) = 0;
+    virtual void setVitesse(double v) = 0;
     virtual bool jeTeVois(const IBestiole& b) const = 0;
 
     // Getters de base (indispensables pour les capteurs)
