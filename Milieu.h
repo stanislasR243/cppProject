@@ -1,41 +1,35 @@
 #ifndef _MILIEU_H_
 #define _MILIEU_H_
 
-
 #include "UImg.h"
-#include "Bestiole.h"
+#include "IBestiole.h" // On inclut l'interface
 
 #include <iostream>
 #include <vector>
-
-using namespace std;
-
+#include <memory>
 
 class Milieu : public UImg
 {
+private:
+    static const T white[];
 
-private :
-   static const T          white[];
+    int width, height;
+    
+    // Conteneur de gestion de mémoire (Propriété unique)
+    std::vector<std::unique_ptr<IBestiole>> listeBestioles;
 
-   int                     width, height;
-   #include <memory>
-   #include <vector>
+public:
+    Milieu(int _width, int _height);
+    ~Milieu(void);
 
-   std::vector<std::unique_ptr<IBestiole>> listeBestioles;
+    int getWidth(void) const { return width; }
+    int getHeight(void) const { return height; }
 
-public :
-   Milieu( int _width, int _height );
-   ~Milieu( void );
+    // La méthode cruciale pour les comportements
+    std::vector<IBestiole*> getVoisins(const IBestiole& b);
 
-   int getWidth( void ) const { return width; };
-   int getHeight( void ) const { return height; };
-
-   void step( void );
-
-   void addMember(std::unique_ptr<IBestiole> b);
-   int nbVoisins( const Bestiole & b );
-
+    void step(void);
+    void addMember(std::unique_ptr<IBestiole> b);
 };
-
 
 #endif
