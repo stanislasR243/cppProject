@@ -1,68 +1,67 @@
 #include "Milieu.h"
-
 #include <cstdlib>
 #include <ctime>
+#include <algorithm> // Pour std::remove_if
 
+const T Milieu::white[] = { (T)255, (T)255, (T)255 };
 
-const T    Milieu::white[] = { (T)255, (T)255, (T)255 };
-
-
-Milieu::Milieu( int _width, int _height ) : UImg( _width, _height, 1, 3 ),
-                                            width(_width), height(_height)
+Milieu::Milieu(int _width, int _height) : 
+    UImg(_width, _height, 1, 3), 
+    width(_width), height(_height)
 {
-
-   cout << "const Milieu" << endl;
-
-   std::srand( time(NULL) );
-
+    std::cout << "const Milieu" << std::endl;
+    std::srand(std::time(NULL));
 }
 
-
-Milieu::~Milieu( void )
+Milieu::~Milieu(void)
 {
-
-   cout << "dest Milieu" << endl;
-
+    std::cout << "dest Milieu" << std::endl;
 }
 
-
-void Milieu::step( void )
+// Implémentation du radar pour les comportements
+std::vector<IBestiole*> Milieu::getVoisins(const IBestiole& b)
 {
-   cimg_forXY( *this, x, y ) fillC( x, y, 0, white[0], white[1], white[2] );
+    std::vector<IBestiole*> voisins;
 
-   // on change juste Bestiole en IBestiole*
-   for ( std::vector<IBestiole*>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
-   {
-      // On utilise -> car c'est maintenant un pointeur
-      (*it)->action( *this );
-      (*it)->draw( *this );
-   }
-  // Après avoir appelé action() et draw() pour toutes les bestioles
-listeBestioles.erase(
-    std::remove_if(
-        listeBestioles.begin(),
-        listeBestioles.end(),
-        [](const std::unique_ptr<IBestiole> & b){ return b->estMorte(); }
-    ),
-    listeBestioles.end()
-);
+    for (auto const& ptr : listeBestioles)
+    {
+        // On vérifie que ce n'est pas la bestiole elle-même via son ID
+        if (ptr->getIdentite() != b.getIdentite())
+        {
+            // .get() extrait le pointeur brut IBestiole* du unique_ptr
+            voisins.push_back(ptr.get());
+        }
+    }
+    return voisins;
+}
+
+void Milieu::step(void)
+{
+    // 1. On efface l'écran (fond blanc)
+    cimg_forXY(*this, x, y) fillC(x, y, 0, white[0], white[1], white[2]);
+
+    // 2. Mise à jour de chaque bestiole
+    // On itère sur les unique_ptr
+    for (auto& ptr : listeBestioles)
+    {
+        ptr->action(*this); // Le comportement s'exécute ici
+        ptr->draw(*this);   // Affichage
+    }
+
+    // 3. Nettoyage : On supprime les bestioles mortes
+    listeBestioles.erase(
+        std::remove_if(
+            listeBestioles.begin(),
+            listeBestioles.end(),
+            [](const std::unique_ptr<IBestiole>& b) { return b->estMorte(); }
+        ),
+        listeBestioles.end()
+    );
 }
 
 void Milieu::addMember(std::unique_ptr<IBestiole> b)
 {
-    b->initCoords(width, height);           // position aléatoire du clone
-    listeBestioles.push_back(std::move(b)); // transfert de propriété
-}
-int Milieu::nbVoisins( const Bestiole & b )
-{
-
-   int         nb = 0;
-
-
-   for ( std::vector<Bestiole>::iterator it = listeBestioles.begin() ; it != listeBestioles.end() ; ++it )
-      if ( !(b == *it) && b.jeTeVois(*it) )
-         ++nb;
-
-   return nb;
-
+    // Ici on suppose que IBestiole a accès à une méthode de placement initial
+    // b->initCoords(width, height); 
+    listeBestioles.push_back(std::move(b)); // Transfert de propriété au vecteur
 }
