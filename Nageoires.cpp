@@ -1,9 +1,9 @@
-#include "Nageoire.h"
+#include "Nageoires.h"
 
-Nageoire::Nageoire(IBestiole* b, double coeff)
+Nageoires::Nageoires(IBestiole* b, double coeff)
     : Decorator(b), coefficient(coeff) {}
 
 // On surcharge la vitesse : vitesse originale * coefficient
-double Nageoire::getVitesse() const {
+double Nageoires::getVitesse() const {
     return bestiole->getVitesse() * coefficient;
 }
