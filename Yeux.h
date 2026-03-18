@@ -2,19 +2,21 @@
 #define YEUX_H
 
 #include "Decorator.h"
+#include <cmath>
 
 class Yeux : public Decorator {
 private:
-    double distance; // delta_y
-    double angle;    // alpha
-    double capacite; // gamma
+    double distance; // δy (distance max)
+    double angle;    // α (angle de vision en radians)
+    double capacite; // γ (capacité de détection)
+
 public:
     Yeux(IBestiole* b, double d, double a, double g);
     virtual ~Yeux() {}
 
-    // On surcharge uniquement ce qui change
-    bool jeTeVois(const IBestiole& b) const override;
-    void draw(UImg& img) override;
+    // Détection visuelle
+    bool jeTeVois(const IBestiole& autre) const override;
+
 };
 
 #endif
