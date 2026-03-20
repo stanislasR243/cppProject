@@ -4,6 +4,9 @@
 #include <cmath>
 #include <memory>
 #include <cstring>
+#include "Gadget.h"
+#include <vector>
+
 
 const double      Bestiole::AFF_SIZE = 8.;
 const double      Bestiole::MAX_VITESSE = 10.;
@@ -92,9 +95,28 @@ void Bestiole::bouge( int xLim, int yLim )
       cumulY += ny - y;
    }
 }
+// Ajouter un gadget à la bestiole
+void Bestiole::addGadget(std::unique_ptr<Gadget> g) {
+    gadgets.push_back(std::move(g));
+}
 
+// Appliquer les effets de tous les gadgets
+void Bestiole::applyGadgets() {
+    for (auto& g : gadgets) {
+        g->apply(this);
+    }
+}
+
+// Dessiner tous les gadgets associés
+void Bestiole::drawGadgets(UImg& img) {
+    for (auto& g : gadgets) {
+        g->draw(&img, this);
+    }
+}
 void Bestiole::action(Milieu & monMilieu) {
     age++;
+    // Appliquer les effets des gadgets
+    applyGadgets();
     if (comportement) {
         comportement->execute(*this, monMilieu);
     }
@@ -109,6 +131,8 @@ void Bestiole::draw( UImg & support )
 
    support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE / 5., -orientation / M_PI * 180., couleur );
    support.draw_circle( xt, yt, AFF_SIZE / 2., couleur );
+   // Dessiner les gadgets
+   drawGadgets(support);
 }
 
 bool operator==( const Bestiole & b1, const Bestiole & b2 )
