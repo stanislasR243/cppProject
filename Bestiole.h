@@ -3,7 +3,9 @@
 
 #include "UImg.h"
 #include "IBestiole.h"
+#include "IComportement.h"
 #include <iostream>
+#include <memory> 
 
 using namespace std;
 
@@ -22,10 +24,11 @@ private:
    double        cumulX, cumulY;
    double        orientation;
    double        vitesse;
-   T couleur[3];
+   T             couleur[3];
 
    int           age;
    int           maxAge;
+   std::unique_ptr<IComportement> comportement;
 
 public:                                           
    Bestiole( void );
@@ -38,7 +41,11 @@ public:
    void bouge( int xLim, int yLim );
    void initCoords( int xLim, int yLim );
 
-   // Getters & Setters imposés par IBestiole
+   // --- NOUVELLES MÉTHODES POUR LA FACTORY ---
+   void setComportement(std::unique_ptr<IComportement> c);
+   void setCouleur(int r, int g, int b);
+
+   // --- Getters & Setters imposés par IBestiole ---
    void setOrientation(double a) override;
    void setVitesse(double v) override;
    bool jeTeVois( const IBestiole & b ) const override;
@@ -50,8 +57,8 @@ public:
    double getVitesse() const override { return vitesse; }
    int getIdentite() const override { return identite; }
    
-   double getProtection() const override { return 1.0; } // Valeur par défaut
-   double getCoeffCamouflage() const override { return 0.0; } // Valeur par défaut
+   double getProtection() const override { return 1.0; } 
+   double getCoeffCamouflage() const override { return 0.0; } 
 
    friend bool operator==( const Bestiole & b1, const Bestiole & b2 );
 };

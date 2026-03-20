@@ -10,7 +10,7 @@ const double      Bestiole::MAX_VITESSE = 10.;
 const double      Bestiole::LIMITE_VUE = 30.;
 int               Bestiole::next = 0;
 
-Bestiole::Bestiole( void )
+Bestiole::Bestiole( void ) : comportement(nullptr)
 {
    identite = ++next;
    x = y = 0;
@@ -93,18 +93,13 @@ void Bestiole::bouge( int xLim, int yLim )
    }
 }
 
-void Bestiole::action(Milieu & monMilieu)
-{
+void Bestiole::action(Milieu & monMilieu) {
     age++;
-    bouge(monMilieu.getWidth(), monMilieu.getHeight());
-
-    const double PROBA_CLONAGE = 0.01;
-    if (((double)rand() / RAND_MAX) < PROBA_CLONAGE)
-    {
-        // On crée un clone et on le déplace (move) dans le milieu
-        auto clone = std::make_unique<Bestiole>(*this);
-        monMilieu.addMember(std::move(clone));
+    if (comportement) {
+        comportement->execute(*this, monMilieu);
     }
+    // Note : bouge() sera appelé à l'intérieur de execute() 
+    // ou juste après selon ta logique de comportement.
 }
 
 void Bestiole::draw( UImg & support )
@@ -139,4 +134,14 @@ void Bestiole::setOrientation(double a)
 void Bestiole::setVitesse(double v) 
 {
     vitesse = (v > MAX_VITESSE) ? MAX_VITESSE : v;
+}
+
+void Bestiole::setComportement(std::unique_ptr<IComportement> c) {
+    this->comportement = std::move(c);
+}
+
+void Bestiole::setCouleur(int r, int g, int b) {
+    couleur[0] = static_cast<T>(r);
+    couleur[1] = static_cast<T>(g);
+    couleur[2] = static_cast<T>(b);
 }

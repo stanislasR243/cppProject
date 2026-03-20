@@ -3,7 +3,21 @@
 Decorator::Decorator(IBestiole* b) : bestiole(b) {}
 
 Decorator::~Decorator() {
-    delete bestiole; // Très important : détruit toute la pile d'accessoires
+    delete bestiole; // Détruit récursivement toute la pile (ex: Yeux -> Carapace -> Bestiole)
+}
+
+// --- AJOUTS RÉCENTS (Manquants dans ton erreur de compilation) ---
+
+void Decorator::initCoords(int xLim, int yLim) {
+    bestiole->initCoords(xLim, yLim);
+}
+
+void Decorator::setOrientation(double a) {
+    bestiole->setOrientation(a);
+}
+
+void Decorator::setVitesse(double v) {
+    bestiole->setVitesse(v);
 }
 
 // --- Délégation des actions de base ---
@@ -20,7 +34,7 @@ bool Decorator::jeTeVois(const IBestiole& b) const {
     return bestiole->jeTeVois(b);
 }
 
-// --- Délégation des getters de position et identité ---
+// --- Délégation des getters ---
 
 double Decorator::getX() const {
     return bestiole->getX();
