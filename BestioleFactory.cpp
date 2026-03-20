@@ -42,7 +42,7 @@ std::unique_ptr<IBestiole> BestioleFactory::creerBestiole()
     //  Comportement (pour l'instant Bestiole simple)
     b = std::make_unique<Bestiole>();
 
-    // 👉 plus tard tu mettras Gregaire / Peureuse / Kamikaze
+    //  Gregaire / Peureuse / Kamikaze plus tard
 
     //  Capteurs (50%)
     if (rand() % 2)
