@@ -30,33 +30,12 @@ private:
    int           age;
    int           maxAge;
    std::unique_ptr<IComportement> comportement;
-   // Vecteur pour les gadgets
-   std::vector<std::unique_ptr<Gadget>> gadgets;
 
 public:                                           
    Bestiole( void );
    Bestiole( const Bestiole & b );
    virtual ~Bestiole( void );
-      // --- Méthodes pour gérer les gadgets ---
-   void addGadget(std::unique_ptr<Gadget> g) {
-       gadgets.push_back(std::move(g));
-   }
-
-   void applyGadgets() {
-       for (auto& g : gadgets)
-           g->apply(this);
-   }
-
-   void drawGadgets(UImg & support) {
-       for (auto& g : gadgets)
-           g->draw(&support, this);
-   }
-
-   bool hasGadget(const std::string& name) const {
-       for (auto& g : gadgets)
-           if (g->getName() == name) return true;
-       return false;
-   }
+  
 
    void action( Milieu & monMilieu ) override;
    void draw( UImg & support ) override;
