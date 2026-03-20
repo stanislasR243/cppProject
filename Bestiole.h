@@ -5,6 +5,7 @@
 #include "IBestiole.h"
 #include "IComportement.h"
 #include <iostream>
+#include <vector>
 #include <memory> 
 #include "Gadget.h"  // Nouveau
 
@@ -30,6 +31,8 @@ private:
    int           age;
    int           maxAge;
    std::unique_ptr<IComportement> comportement;
+   // Liste des gadgets attachés à la bestiole
+   std::vector<std::unique_ptr<Gadget>> gadgets;
 
 public:                                           
    Bestiole( void );
@@ -42,6 +45,10 @@ public:
    
    void bouge( int xLim, int yLim );
    void initCoords( int xLim, int yLim );
+   // --- Gestion des gadgets ---
+   void addGadget(std::unique_ptr<Gadget> g) override;
+   void applyGadgets() override;
+   void drawGadgets(UImg& img) override;
 
    // --- NOUVELLES MÉTHODES POUR LA FACTORY ---
    void setComportement(std::unique_ptr<IComportement> c);
