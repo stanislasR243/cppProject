@@ -5,27 +5,28 @@
 #include <string>
 #include <memory>
 
-class IBestiole;
-class UImg;
+class IBestiole; // Forward declaration
+class UImg;      // Forward declaration pour le dessin
 
 class Gadget {
 protected:
-    std::string name;
+    std::string name; // Nom du gadget
 
 public:
     Gadget() : name("Gadget") {}
     virtual ~Gadget() = default;
 
+    // Getter/Setter du nom
     std::string getName() const { return name; }
     void setName(const std::string& n) { name = n; }
 
-    // Appliquer l’effet sur la bestiole
+    // Appliquer l'effet du gadget sur la bestiole
     virtual void apply(IBestiole* bestiole) = 0;
 
-    // Dessiner le gadget
+    // Dessiner le gadget sur l'image
     virtual void draw(UImg* img, IBestiole* bestiole) = 0;
 
-    // Clonage pour avoir des gadgets indépendants
+    // Clonage : pour créer une copie indépendante du gadget
     virtual std::unique_ptr<Gadget> clone() const = 0;
 };
 
