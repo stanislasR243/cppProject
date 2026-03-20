@@ -1,8 +1,9 @@
 #ifndef BESTIOLEFACTORY_H
 #define BESTIOLEFACTORY_H
 
-#include "Bestiole.h"
+#include "IBestiole.h"
 #include "Milieu.h"
+#include <memory>
 
 class BestioleFactory
 {
@@ -13,12 +14,14 @@ private:
     double pPeureuse;
     double pKamikaze;
 
-    BestioleFactory(); // constructeur privé
+    BestioleFactory();
+
+    double randMinMax(double min, double max);
 
 public:
     static BestioleFactory* getInstance();
 
-    Bestiole creerBestiole(Milieu& m);
+    std::unique_ptr<IBestiole> creerBestiole();
 };
 
 #endif
