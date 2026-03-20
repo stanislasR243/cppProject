@@ -35,20 +35,33 @@ std::vector<IBestiole*> Milieu::getVoisins(const IBestiole& b)
     return voisins;
 }
 
+void Milieu::addMember(std::unique_ptr<IBestiole> b)
+{
+    // On ajoute dans le tampon, pas dans la liste principale
+    nouvellesBestioles.push_back(std::move(b)); 
+}
+
 void Milieu::step(void)
 {
-    // 1. On efface l'écran (fond blanc)
+    // 1. Effacer l'écran
     cimg_forXY(*this, x, y) fillC(x, y, 0, white[0], white[1], white[2]);
 
-    // 2. Mise à jour de chaque bestiole
-    // On itère sur les unique_ptr
+    // 2. Mise à jour (Boucle safe car on ne touche pas à listeBestioles dedans)
     for (auto& ptr : listeBestioles)
     {
-        ptr->action(*this); // Le comportement s'exécute ici
-        ptr->draw(*this);   // Affichage
+        ptr->action(*this);
+        ptr->draw(*this);
     }
 
-    // 3. Nettoyage : On supprime les bestioles mortes
+    // 3. Intégration des nouveaux nés (Clonage)
+    if (!nouvellesBestioles.empty()) {
+        for (auto & nb : nouvellesBestioles) {
+            listeBestioles.push_back(std::move(nb));
+        }
+        nouvellesBestioles.clear();
+    }
+
+    // 4. Nettoyage des morts
     listeBestioles.erase(
         std::remove_if(
             listeBestioles.begin(),
@@ -57,11 +70,4 @@ void Milieu::step(void)
         ),
         listeBestioles.end()
     );
-}
-
-void Milieu::addMember(std::unique_ptr<IBestiole> b)
-{
-    // Ici on suppose que IBestiole a accès à une méthode de placement initial
-    // b->initCoords(width, height); 
-    listeBestioles.push_back(std::move(b)); // Transfert de propriété au vecteur
 }

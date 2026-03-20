@@ -13,38 +13,46 @@ int               Bestiole::next = 0;
 Bestiole::Bestiole( void )
 {
    identite = ++next;
-   cout << "const Bestiole (" << identite << ") par defaut" << endl;
    x = y = 0;
    cumulX = cumulY = 0.;
-   orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
-   vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
+   orientation = (static_cast<double>(rand()) / RAND_MAX) * 2. * M_PI;
+   vitesse = (static_cast<double>(rand()) / RAND_MAX) * MAX_VITESSE;
+   
    age = 0;
    maxAge = rand() % 200 + 100;
-   couleur = new T[ 3 ];
-   couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   couleur[ 1 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
-   couleur[ 2 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
+
+   // Remplissage direct du tableau (pas de 'new')
+   couleur[0] = rand() % 231;
+   couleur[1] = rand() % 231;
+   couleur[2] = rand() % 231;
+
+   cout << "const Bestiole (" << identite << ") par defaut" << endl;
 }
 
 Bestiole::Bestiole( const Bestiole & b )
 {
    identite = ++next;
-   cout << "const Bestiole (" << identite << ") par copie" << endl;
    x = b.x;
    y = b.y;
-   cumulX = cumulY = 0.;
+   cumulX = b.cumulX;
+   cumulY = b.cumulY;
    orientation = b.orientation;
    vitesse = b.vitesse;
-   couleur = new T[ 3 ];
-   memcpy( couleur, b.couleur, 3*sizeof(T) );
    age = b.age;
    maxAge = b.maxAge;
+
+   // Copie simple des valeurs du tableau
+   couleur[0] = b.couleur[0];
+   couleur[1] = b.couleur[1];
+   couleur[2] = b.couleur[2];
+
+   cout << "Copie Bestiole (" << b.identite << " -> " << identite << ")" << endl;
 }
 
 Bestiole::~Bestiole( void )
 {
-   delete[] couleur;
-   cout << "dest Bestiole" << endl;
+   // Plus besoin de delete[], le tableau couleur[3] est géré automatiquement
+   cout << "dest Bestiole (" << identite << ")" << endl;
 }
 
 void Bestiole::initCoords( int xLim, int yLim )
@@ -56,8 +64,8 @@ void Bestiole::initCoords( int xLim, int yLim )
 void Bestiole::bouge( int xLim, int yLim )
 {
    double         nx, ny;
-   double         dx = cos( orientation )*vitesse;
-   double         dy = -sin( orientation )*vitesse;
+   double         dx = cos( orientation ) * vitesse;
+   double         dy = -sin( orientation ) * vitesse;
    int            cx, cy;
 
    cx = static_cast<int>( cumulX ); cumulX -= cx;
@@ -91,8 +99,9 @@ void Bestiole::action(Milieu & monMilieu)
     bouge(monMilieu.getWidth(), monMilieu.getHeight());
 
     const double PROBA_CLONAGE = 0.01;
-    if ((double)rand() / RAND_MAX < PROBA_CLONAGE)
+    if (((double)rand() / RAND_MAX) < PROBA_CLONAGE)
     {
+        // On crée un clone et on le déplace (move) dans le milieu
         auto clone = std::make_unique<Bestiole>(*this);
         monMilieu.addMember(std::move(clone));
     }
@@ -100,11 +109,11 @@ void Bestiole::action(Milieu & monMilieu)
 
 void Bestiole::draw( UImg & support )
 {
-   double         xt = x + cos( orientation )*AFF_SIZE/2.1;
-   double         yt = y - sin( orientation )*AFF_SIZE/2.1;
+   double         xt = x + cos( orientation ) * AFF_SIZE / 2.1;
+   double         yt = y - sin( orientation ) * AFF_SIZE / 2.1;
 
-   support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE/5., -orientation/M_PI*180., couleur );
-   support.draw_circle( xt, yt, AFF_SIZE/2., couleur );
+   support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE / 5., -orientation / M_PI * 180., couleur );
+   support.draw_circle( xt, yt, AFF_SIZE / 2., couleur );
 }
 
 bool operator==( const Bestiole & b1, const Bestiole & b2 )
@@ -117,15 +126,17 @@ bool Bestiole::jeTeVois( const IBestiole & b ) const
    return false; 
 }
 
-bool Bestiole::estMorte() const {
+bool Bestiole::estMorte() const 
+{
     return (age >= maxAge);
 }
 
-// --- Nouveaux Setters ---
-void Bestiole::setOrientation(double a) {
+void Bestiole::setOrientation(double a) 
+{
     orientation = a;
 }
 
-void Bestiole::setVitesse(double v) {
+void Bestiole::setVitesse(double v) 
+{
     vitesse = (v > MAX_VITESSE) ? MAX_VITESSE : v;
 }

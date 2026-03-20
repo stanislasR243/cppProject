@@ -22,7 +22,7 @@ private:
    double        cumulX, cumulY;
    double        orientation;
    double        vitesse;
-   T           * couleur;
+   T couleur[3];
 
    int           age;
    int           maxAge;

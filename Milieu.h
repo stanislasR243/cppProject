@@ -17,6 +17,7 @@ private:
     
     // Conteneur de gestion de mémoire (Propriété unique)
     std::vector<std::unique_ptr<IBestiole>> listeBestioles;
+    std::vector<std::unique_ptr<IBestiole>> nouvellesBestioles; // <--- AJOUT
 
 public:
     Milieu(int _width, int _height);
