@@ -5,6 +5,12 @@
 #include "Peureuse.h"
 #include "Kamikaze.h"
 
+#include "Yeux.h"
+#include "Oreilles.h"
+#include "Nageoires.h"
+#include "Carapace.h"
+#include "Camouflage.h"
+
 #include <cstdlib>
 #include <ctime>
 
@@ -36,29 +42,29 @@ double BestioleFactory::randMinMax(double min, double max)
 // Création d'une bestiole avec comportement aléatoire
 std::unique_ptr<IBestiole> BestioleFactory::creerBestiole()
 {
-    // 1. On crée la bestiole de base (corps)
-    // On utilise un pointeur vers Bestiole car IBestiole n'a peut-être pas setComportement
     auto b = std::make_unique<Bestiole>();
 
-    // 2. Tirage aléatoire pour le comportement
+    // --- Comportement ---
     double r = static_cast<double>(rand()) / RAND_MAX;
-
     if (r < pGregaire) 
-    {
-        // On injecte le comportement Grégaire
         b->setComportement(std::make_unique<Gregaire>());
-    } 
     else if (r < (pGregaire + pPeureuse)) 
-    {
-        // On injecte le comportement Peureuse
         b->setComportement(std::make_unique<Peureuse>());
-    } 
     else 
-    {
-        // Le reste (pKamikaze)
         b->setComportement(std::make_unique<Kamikaze>());
-    }
 
-    // 3. Retourne la bestiole "intelligente" castée en IBestiole
+    // --- Capteurs et accessoires (50% de chance chacun) ---
+    if (rand() % 2)
+        b->addGadget(std::make_unique<Yeux>(randMinMax(30, 60), M_PI/2, randMinMax(0.5,1.0)));
+    if (rand() % 2)
+        b->addGadget(std::make_unique<Oreilles>(randMinMax(40, 80), randMinMax(0.3,0.8)));
+
+    if (rand() % 2)
+        b->addGadget(std::make_unique<Nageoires>(randMinMax(1.0,2.0)));
+    if (rand() % 2)
+        b->addGadget(std::make_unique<Carapace>(randMinMax(1.0,2.0), randMinMax(1.0,2.0)));
+    if (rand() % 2)
+        b->addGadget(std::make_unique<Camouflage>(randMinMax(0.0,1.0)));
+
     return b;
 }
