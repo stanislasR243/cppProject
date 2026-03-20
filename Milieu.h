@@ -31,6 +31,7 @@ public:
 
     void step(void);
     void addMember(std::unique_ptr<IBestiole> b);
+    void gererCollisions();
 };
 
 #endif

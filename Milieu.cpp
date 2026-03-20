@@ -41,19 +41,56 @@ void Milieu::addMember(std::unique_ptr<IBestiole> b)
     nouvellesBestioles.push_back(std::move(b)); 
 }
 
+void Milieu::gererCollisions() {
+    // On parcourt toutes les paires possibles (i, j) sans doublons
+    for (auto it1 = listeBestioles.begin(); it1 != listeBestioles.end(); ++it1) {
+        for (auto it2 = std::next(it1); it2 != listeBestioles.end(); ++it2) {
+            
+            // On récupère des références pour plus de clarté
+            IBestiole& b1 = **it1;
+            IBestiole& b2 = **it2;
+
+            // Calcul de la distance au carré (plus rapide car évite la racine carrée)
+            double dx = b1.getX() - b2.getX();
+            double dy = b1.getY() - b2.getY();
+            double distInterne = dx * dx + dy * dy;
+
+            // 8.0 * 8.0 = 64.0 (Seuil de collision)
+            if (distInterne < 70.0) {
+                // RÉACTION : Rebond simple
+                // On inverse l'orientation des deux bestioles
+                b1.setOrientation(b1.getOrientation() + M_PI);
+                b2.setOrientation(b2.getOrientation() + M_PI);
+                
+                // Optionnel : on peut aussi les décaler un peu pour éviter 
+                // qu'elles restent collées au tour suivant
+            }
+        }
+    }
+}
+
 void Milieu::step(void)
 {
     // 1. Effacer l'écran
-    cimg_forXY(*this, x, y) fillC(x, y, 0, white[0], white[1], white[2]);
+    cimg_forXY(*this, x, y) fillC(x, y, 0, 255, 255, 255); // Remplacer white par 255 si white n'est pas défini
 
-    // 2. Mise à jour (Boucle safe car on ne touche pas à listeBestioles dedans)
+    // 2. Mise à jour des positions
     for (auto& ptr : listeBestioles)
     {
         ptr->action(*this);
+    }
+
+    // --- AJOUT ICI : Gestion des collisions ---
+    // On le fait APRES que tout le monde ait bougé, mais AVANT le dessin
+    gererCollisions(); 
+
+    // 3. Dessin des bestioles
+    for (auto& ptr : listeBestioles)
+    {
         ptr->draw(*this);
     }
 
-    // 3. Intégration des nouveaux nés (Clonage)
+    // 4. Intégration des nouveaux nés (Clonage)
     if (!nouvellesBestioles.empty()) {
         for (auto & nb : nouvellesBestioles) {
             listeBestioles.push_back(std::move(nb));
@@ -61,7 +98,7 @@ void Milieu::step(void)
         nouvellesBestioles.clear();
     }
 
-    // 4. Nettoyage des morts
+    // 5. Nettoyage des morts
     listeBestioles.erase(
         std::remove_if(
             listeBestioles.begin(),

@@ -12,6 +12,7 @@ public:
     
     virtual void initCoords(int xLim, int yLim) = 0; // À ajouter
 
+    virtual void bouge(int xLim, int yLim) = 0;
     // Logique de simulation
     virtual void action(Milieu& m) = 0;
     virtual void draw(UImg& img) = 0;
