@@ -3,7 +3,9 @@
 
 #include "UImg.h"
 #include <iostream>
-
+#include <vector>
+#include <memory>
+class Gadget; // Forward declaration
 class Milieu;
 
 class IBestiole {
@@ -26,6 +28,10 @@ public:
     virtual double getY() const = 0;
     virtual double getOrientation() const = 0;
     virtual int getIdentite() const = 0; // Pour distinguer les individus
+
+    virtual void addGadget(std::unique_ptr<Gadget> g) = 0;
+    virtual void applyGadgets() = 0;
+    virtual void drawGadgets(UImg& img) = 0;
     
     // Caractéristiques physiques (modifiables par Decorator)
     virtual double getVitesse() const = 0;
