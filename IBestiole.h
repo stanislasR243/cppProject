@@ -9,6 +9,8 @@ class Milieu;
 class IBestiole {
 public:
     virtual ~IBestiole() {}
+    
+    virtual void initCoords(int xLim, int yLim) = 0; // À ajouter
 
     // Logique de simulation
     virtual void action(Milieu& m) = 0;
